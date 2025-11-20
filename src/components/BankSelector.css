@@ -1,0 +1,125 @@
+.bank-selector {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.bank-input {
+  padding-right: 40px !important;
+}
+
+.bank-input.selected-view {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  height: 58px;
+  padding: 16px 40px 16px 20px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg, 12px);
+  background-color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-primary);
+  font-size: 1.1rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) inset;
+}
+
+.bank-input.selected-view:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.clear-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-text-secondary);
+}
+
+.bank-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-lg, 12px);
+  /* Fallback if variable not available */
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bank-dropdown li {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  color: var(--color-text-primary, #333);
+}
+
+.bank-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.bank-dropdown li:hover {
+  background-color: rgba(250, 204, 21, 0.12);
+}
+
+.bank-dropdown li.selected {
+  background-color: rgba(249, 115, 22, 0.12);
+  color: var(--color-primary, #f97316);
+}
+
+.bank-code {
+  font-weight: 600;
+  font-family: monospace;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  line-height: 1.4;
+}
+
+.selected-view .bank-code {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.bank-name {
+  font-weight: 500;
+}
+
+.match-highlight {
+  color: #ef4444;
+  font-weight: 700;
+}

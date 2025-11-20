@@ -1,0 +1,60 @@
+:root {
+  /* Color Palette - Warm & Vivid */
+  --color-bg: #fff7ed;
+  --color-surface: rgba(255, 255, 255, 0.7);
+  --color-surface-solid: #ffffff;
+
+  /* Typography Colors - Darkened for readability */
+  --color-text-primary: #0f172a;
+  /* Charcoal for contrast */
+  --color-text-secondary: #1f2937;
+  /* Darker cool neutral for legibility */
+  --color-text-muted: #6b7280;
+  /* Muted gray */
+
+  /* Gradient Accents */
+  --gradient-primary: linear-gradient(135deg, #facc15 0%, #f97316 50%, #ea580c 100%);
+  --gradient-subtle: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+
+  --color-primary: #f97316;
+  /* Vibrant orange */
+  --color-border: #fed7aa;
+  /* Warm light border */
+
+  /* Shadows & Glows */
+  --shadow-sm: 0 2px 4px rgb(0 0 0 / 0.02);
+  --shadow-card:
+    0 4px 6px -1px rgb(0 0 0 / 0.05),
+    0 10px 15px -3px rgb(0 0 0 / 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  --glow-primary: 0 0 20px rgba(250, 204, 21, 0.18);
+
+  /* Radius */
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
+
+  /* Ambient Background Blobs */
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(250, 204, 21, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(249, 115, 22, 0.12) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
