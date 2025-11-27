@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
+import CoinRain, { type CoinRainHandle } from './components/CoinRain'
+import BankSelector from './components/BankSelector'
 import { ClearableInput } from './components/ClearableInput'
 import { DownloadButton } from './components/DownloadButton'
 import { ShareButton } from './components/ShareButton'
-import CoinRain, { type CoinRainHandle } from './components/CoinRain'
-import BankSelector from './components/BankSelector'
-import { generateQRCode } from './utils/qrGenerator'
+import { QrCanvas } from './components/QrCanvas'
 import './App.css'
 
 function App() {
@@ -15,7 +15,6 @@ function App() {
   const [accountId, setAccountId] = useState(() => localStorage.getItem('accountId') || '')
   const [name, setName] = useState(() => localStorage.getItem('name') || '')
   const [amount, setAmount] = useState('')
-  const [message, setMessage] = useState('')
   const [qrCodeUrl, setQrCodeUrl] = useState('')
   const coinRainRef = useRef<CoinRainHandle>(null)
   const cardRef = useRef<HTMLElement>(null)
@@ -33,24 +32,15 @@ function App() {
     localStorage.setItem('name', name)
   }, [name])
 
-  useEffect(() => {
-    const updateQRCode = async () => {
-      if (bankCode && accountId) {
-        const url = await generateQRCode({
-          bankCode,
-          accountId, // Use original input for display
-          name, // Pass name to generator
-          amount,
-          message
-        })
-        setQrCodeUrl(url)
-      } else {
-        setQrCodeUrl('')
+  const qrOptions = bankCode && accountId
+    ? {
+        bankCode,
+        accountId, // Use original input for display
+        name, // Pass name to generator
+        amount: amount ? Number(amount) : undefined
       }
-    }
-
-    updateQRCode()
-  }, [bankCode, accountId, name, amount, message])
+    : null
+  const qrFileName = bankCode && accountId ? `twqr-${bankCode}-${accountId}.png` : 'twqr.png'
 
   useEffect(() => {
     document.title = `${t('appTitle')} | ${t('appSubtitle')}`
@@ -138,19 +128,6 @@ function App() {
                   onClear={() => setAmount('')}
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="message">{t('messageLabel')}</label>
-                <ClearableInput
-                  type="text"
-                  id="message"
-                  name="message"
-                  placeholder={t('messagePlaceholder')}
-                  value={message}
-                  maxLength={19}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onClear={() => setMessage('')}
-                />
-              </div>
             </div>
           </div>
 
@@ -176,19 +153,14 @@ function App() {
         </section>
 
         <section className="qr-section card">
-          <div className={`qr-placeholder ${!qrCodeUrl ? 'has-text' : ''}`}>
-            {qrCodeUrl ? (
-              <div className="qr-wrapper">
-                <img src={qrCodeUrl} alt="Generated QR Code" className="qr-code-image" />
-              </div>
-            ) : (
-              <p>{t('qrPlaceholderText')}</p>
-            )}
-          </div>
+          <QrCanvas
+            options={qrOptions}
+            onChange={setQrCodeUrl}
+          />
           {qrCodeUrl && (
             <div className="action-buttons-container">
-              <DownloadButton imageUrl={qrCodeUrl} fileName={`twqr-${bankCode}-${accountId}.png`} />
-              <ShareButton imageUrl={qrCodeUrl} fileName={`twqr-${bankCode}-${accountId}.png`} />
+              <DownloadButton imageUrl={qrCodeUrl} fileName={qrFileName} />
+              <ShareButton imageUrl={qrCodeUrl} fileName={qrFileName} />
             </div>
           )}
         </section>

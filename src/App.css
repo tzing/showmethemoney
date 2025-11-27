@@ -247,39 +247,6 @@
   position: relative;
 }
 
-.qr-placeholder {
-  width: 100%;
-  /* Default square aspect ratio when no text */
-  aspect-ratio: 1;
-  border-radius: var(--radius-lg);
-  background: white;
-  border: none;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-muted);
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-/* When text is present (class added via React), become rectangular */
-.qr-placeholder.has-text {
-  aspect-ratio: auto;
-  min-height: 480px;
-}
-
-.qr-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
 .action-buttons-container {
   position: absolute;
   bottom: 24px;
@@ -326,29 +293,6 @@
 
 .action-btn:active {
   transform: translateY(0);
-}
-
-.qr-code-image {
-  max-width: 80%;
-  height: auto;
-  border-radius: var(--radius-md);
-}
-
-.qr-placeholder::after {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  border-radius: calc(var(--radius-lg) + 10px);
-  background: var(--gradient-primary);
-  z-index: -1;
-  opacity: 0.1;
-  filter: blur(20px);
-}
-
-.qr-placeholder p {
-  margin-top: 16px;
-  font-weight: 500;
-  font-size: 0.9rem;
 }
 
 /* Guide Section - Timeline/Badges */
@@ -517,18 +461,5 @@
   .card {
     padding: 24px;
     box-shadow: 0 4px 20px -2px rgb(0 0 0 / 0.05);
-  }
-
-  /* On very small screens, ensure QR area is large and rectangular */
-  .qr-placeholder {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-  }
-
-  .qr-placeholder.has-text {
-    min-height: 450px;
-    aspect-ratio: auto;
   }
 }
