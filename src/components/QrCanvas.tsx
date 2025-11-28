@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import QRCode from 'qrcode'
-import { generateTWQRPUrl, type TWQRPUrlOptions } from '../utils/twqrUrl'
+import { type TWQRPUrlOptions } from '../utils/twqrUrl'
 import twqrLogo from '../assets/TWQR-logo.png'
 import './QrCanvas.css'
 
@@ -9,21 +9,21 @@ export interface QRCodeOptions extends TWQRPUrlOptions {
   name?: string
 }
 
-export const useQrImage = (options: QRCodeOptions | null) => {
+export const useQrImage = (content: string, options: QRCodeOptions | null) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('')
 
   useEffect(() => {
     let cancelled = false
 
     const updateQRCode = async () => {
-      if (!options?.bankCode || !options?.accountId) {
+      if (!content || !options?.bankCode || !options?.accountId) {
         setQrCodeUrl('')
         return
       }
 
-      const url = await generateQRCode(options)
+      const { dataUrl } = await generateQRCode(content, options)
       if (!cancelled) {
-        setQrCodeUrl(url)
+        setQrCodeUrl(dataUrl)
       }
     }
 
@@ -33,17 +33,19 @@ export const useQrImage = (options: QRCodeOptions | null) => {
       cancelled = true
     }
   }, [
+    content,
     options?.bankCode,
     options?.accountId,
     options?.name,
     options?.amount
   ])
 
-  return qrCodeUrl
+  return { qrCodeUrl }
 }
 
 interface QrCanvasProps {
   options: QRCodeOptions | null
+  content: string
   className?: string
   alt?: string
   onChange?: (dataUrl: string) => void
@@ -51,12 +53,13 @@ interface QrCanvasProps {
 
 export const QrCanvas = ({
   options,
+  content,
   className,
   alt = 'Generated QR Code',
-  onChange
+  onChange,
 }: QrCanvasProps) => {
   const { t } = useTranslation()
-  const qrCodeUrl = useQrImage(options)
+  const { qrCodeUrl } = useQrImage(content, options)
   const placeholderText = t('qrPlaceholderText')
 
   useEffect(() => {
@@ -64,7 +67,7 @@ export const QrCanvas = ({
   }, [qrCodeUrl, onChange])
 
   return (
-    <div className={`qr-placeholder ${!qrCodeUrl ? 'has-text' : ''}`}>
+    <div className={`qr-canvas ${!qrCodeUrl ? 'has-text' : ''}`}>
       {qrCodeUrl ? (
         <div className="qr-wrapper">
           <img src={qrCodeUrl} alt={alt} className={`qr-code-image ${className || ''}`} />
@@ -76,12 +79,10 @@ export const QrCanvas = ({
   )
 }
 
-const generateQRCode = async (options: QRCodeOptions): Promise<string> => {
+const generateQRCode = async (content: string, options: QRCodeOptions): Promise<{ dataUrl: string }> => {
   const { bankCode, accountId, name, amount } = options
   try {
-    const qrData = generateTWQRPUrl(options)
-
-    const qrDataUrl = await QRCode.toDataURL(qrData, {
+    const qrDataUrl = await QRCode.toDataURL(content, {
       width: 400,
       margin: 0,
       errorCorrectionLevel: 'H',
@@ -93,7 +94,7 @@ const generateQRCode = async (options: QRCodeOptions): Promise<string> => {
 
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
-    if (!ctx) return ''
+    if (!ctx) return { dataUrl: '' }
 
     const qrImage = new Image()
     const logoImage = new Image()
@@ -218,9 +219,9 @@ const generateQRCode = async (options: QRCodeOptions): Promise<string> => {
       URL.revokeObjectURL(logoObjectUrl)
     }
 
-    return dataUrl
+    return { dataUrl }
   } catch (err) {
     console.error(err)
-    return ''
+    return { dataUrl: '' }
   }
 }

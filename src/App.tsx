@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import CoinRain, { type CoinRainHandle } from './components/CoinRain'
 import BankSelector from './components/BankSelector'
@@ -6,16 +6,19 @@ import { ClearableInput } from './components/ClearableInput'
 import { DownloadButton } from './components/DownloadButton'
 import { ShareButton } from './components/ShareButton'
 import { QrCanvas } from './components/QrCanvas'
+import { generateTWQRPUrl } from './utils/twqrUrl'
 import './App.css'
 
 function App() {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isQrExpanded, setIsQrExpanded] = useState(false)
   const [bankCode, setBankCode] = useState(() => localStorage.getItem('bankCode') || '')
   const [accountId, setAccountId] = useState(() => localStorage.getItem('accountId') || '')
   const [name, setName] = useState(() => localStorage.getItem('name') || '')
   const [amount, setAmount] = useState('')
   const [qrCodeUrl, setQrCodeUrl] = useState('')
+  const [qrContent, setQrContent] = useState('')
   const coinRainRef = useRef<CoinRainHandle>(null)
   const cardRef = useRef<HTMLElement>(null)
 
@@ -32,14 +35,25 @@ function App() {
     localStorage.setItem('name', name)
   }, [name])
 
-  const qrOptions = bankCode && accountId
-    ? {
+  const qrOptions = useMemo(() => {
+    return bankCode && accountId
+      ? {
         bankCode,
         accountId, // Use original input for display
         name, // Pass name to generator
         amount: amount ? Number(amount) : undefined
       }
-    : null
+      : null
+  }, [bankCode, accountId, name, amount])
+
+  useEffect(() => {
+    if (qrOptions) {
+      setQrContent(generateTWQRPUrl(qrOptions))
+    } else {
+      setQrContent('')
+    }
+  }, [qrOptions])
+
   const qrFileName = bankCode && accountId ? `twqr-${bankCode}-${accountId}.png` : 'twqr.png'
 
   useEffect(() => {
@@ -153,16 +167,52 @@ function App() {
         </section>
 
         <section className="qr-section card">
-          <QrCanvas
-            options={qrOptions}
-            onChange={setQrCodeUrl}
-          />
-          {qrCodeUrl && (
-            <div className="action-buttons-container">
-              <DownloadButton imageUrl={qrCodeUrl} fileName={qrFileName} />
-              <ShareButton imageUrl={qrCodeUrl} fileName={qrFileName} />
+          <div className="qr-canvas-container">
+            <QrCanvas
+              options={qrOptions}
+              content={qrContent}
+              onChange={setQrCodeUrl}
+            />
+            {qrCodeUrl && (
+              <div className="action-buttons-container">
+                <DownloadButton imageUrl={qrCodeUrl} fileName={qrFileName} />
+                <ShareButton imageUrl={qrCodeUrl} fileName={qrFileName} />
+              </div>
+            )}
+          </div>
+
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', marginTop: '24px' }}>
+            <div className={`collapsible-section ${isQrExpanded ? 'expanded' : ''}`}>
+              <div className="collapsible-content">
+                <div className="qr-data-container">
+                  <label className="qr-data-label">{t('qrDataContent')}</label>
+                  <pre className="qr-data-display">
+                    <code>{qrContent || '...'}</code>
+                  </pre>
+                </div>
+              </div>
             </div>
-          )}
+
+            <button
+              className={`expand-toggle ${isQrExpanded ? 'expanded' : ''}`}
+              onClick={() => setIsQrExpanded(!isQrExpanded)}
+              type="button"
+              aria-label={isQrExpanded ? t('collapseButton') : t('expandButton')}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
         </section>
 
         <section className="guide-section">

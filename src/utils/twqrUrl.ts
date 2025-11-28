@@ -19,7 +19,7 @@ export interface TWQRPUrlOptions {
 }
 
 export const generateTWQRPUrl = ({ bankCode, accountId, amount }: TWQRPUrlOptions): string => {
-  const url = new URL(`TWQRP://BankTransfer/158/02/V1`)
+  const url = new URL(`TWQRP://個人轉帳/158/02/V1`)
 
   url.searchParams.append('D5', bankCode)
   // account ID needs to be padded to 16 digits
