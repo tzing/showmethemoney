@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import QRCode from 'qrcode'
 import { generateTWQRPUrl, type TWQRPUrlOptions } from '../utils/twqrUrl'
+import twqrLogo from '../assets/TWQR-logo.png'
 import './QrCanvas.css'
 
 export interface QRCodeOptions extends TWQRPUrlOptions {
@@ -96,20 +97,32 @@ const generateQRCode = async (options: QRCodeOptions): Promise<string> => {
 
     const qrImage = new Image()
     const logoImage = new Image()
+    let logoObjectUrl = ''
 
-    const loadImages = Promise.all([
+    await Promise.all([
+      // Load generated QR code image
       new Promise((resolve) => {
         qrImage.onload = resolve
         qrImage.src = qrDataUrl
       }),
+
+      // Fetch logo as blob to ensure it works offline/cached
       new Promise((resolve) => {
+        logoImage.crossOrigin = 'anonymous'
         logoImage.onload = resolve
         logoImage.onerror = resolve
-        logoImage.src = '/TWQR-logo.png'
+
+        fetch(twqrLogo)
+          .then((res) => res.blob())
+          .then((blob) => {
+            logoObjectUrl = URL.createObjectURL(blob)
+            logoImage.src = logoObjectUrl
+          })
+          .catch(() => {
+            logoImage.src = twqrLogo
+          })
       })
     ])
-
-    await loadImages
 
     const padding = 40
     const fontSize = 26
@@ -200,7 +213,12 @@ const generateQRCode = async (options: QRCodeOptions): Promise<string> => {
       ctx.fillText(amountValue, startX + symbolWidth + spacing, currentY)
     }
 
-    return canvas.toDataURL()
+    const dataUrl = canvas.toDataURL()
+    if (logoObjectUrl) {
+      URL.revokeObjectURL(logoObjectUrl)
+    }
+
+    return dataUrl
   } catch (err) {
     console.error(err)
     return ''
