@@ -21,8 +21,8 @@ const resources = {
       qrPlaceholderText: '在此產生 QR Code',
       qrDataContent: 'QR Code 內容',
       usageGuideTitle: '使用說明',
-      usageGuideStep1: '輸入轉帳資訊（銀行代碼、帳號）',
-      usageGuideStep2: '產生 QR Code 供付款人掃描',
+      usageGuideStep1: '輸入收款人轉帳資訊（銀行代碼、帳號）',
+      usageGuideStep2: '產生 QR Code 供付款人使用行動銀行掃描',
       securityWarningText:
         '產生的 QR code 含有您的帳戶資訊，請勿在公開網路上分享，以避免遭遇<threeWayScamLink>三方詐騙</threeWayScamLink>。',
       downloadQRCode: '下載 QR Code',
@@ -55,8 +55,8 @@ const resources = {
       qrPlaceholderText: 'QR Code will appear here',
       qrDataContent: 'QR Code Content',
       usageGuideTitle: 'Usage Guide',
-      usageGuideStep1: 'Enter transfer details (Bank Code, Account ID)',
-      usageGuideStep2: 'Generate QR Code for the payer to scan',
+      usageGuideStep1: 'Enter the payee\'s bank transfer info (bank code, account ID)',
+      usageGuideStep2: 'Generate QR Code for the payer to scan with their mobile banking app',
       securityWarningText:
         'This QR Code contains your account information. Do not share it publicly online to avoid <threeWayScamLink>three-way scam</threeWayScamLink>.',
       downloadQRCode: 'Download QR Code',
