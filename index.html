@@ -1,18 +1,91 @@
 <!doctype html>
 <html lang="zh-TW">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/icons/icon-64.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#feefc6" />
-    <meta
-      name="description"
-      content="Single-page PWA for quick financial notes, snapshots, and offline-friendly review."
-    />
-    <title>給我錢 | TWQR 轉帳 QR code 產生器</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary Meta Tags -->
+  <title>給我錢 | TWQR 轉帳 QR code 產生器</title>
+  <meta name="description"
+    content="免費線上 TWQR 轉帳 QR code 產生器。輸入銀行帳號即可產生符合台灣跨行轉帳標準的 QR Code，供付款人使用行動銀行 app 掃描轉帳。" />
+  <meta name="keywords" content="TWQR, QR Code, 轉帳, 銀行轉帳, QR code 產生器, 台灣, 行動銀行" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://twqr.tzing.dev/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://twqr.tzing.dev/" />
+  <meta property="og:title" content="給我錢 | TWQR 轉帳 QR code 產生器" />
+  <meta property="og:description"
+    content="免費線上 TWQR 轉帳 QR code 產生器。輸入銀行帳號即可產生符合台灣跨行轉帳標準的 QR Code，供付款人使用行動銀行 app 掃描轉帳。" />
+  <meta property="og:image" content="https://twqr.tzing.dev/images/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:site_name" content="給我錢" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="給我錢 | TWQR 轉帳 QR code 產生器" />
+  <meta name="twitter:description"
+    content="免費線上 TWQR 轉帳 QR code 產生器。輸入銀行帳號即可產生符合台灣跨行轉帳標準的 QR Code，供付款人使用行動銀行 app 掃描轉帳。" />
+  <meta name="twitter:image" content="https://twqr.tzing.dev/images/og-image.png" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="/icons/icon-64.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#feefc6" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LY8DSR4Q9R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    if (location.hostname === 'twqr.tzing.dev') { // Only enable GA on production domain
+      gtag('js', new Date());
+      gtag('config', 'G-LY8DSR4Q9R');
+    }
+  </script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "給我錢",
+      "alternateName": "Show me the money",
+      "description": "免費線上 TWQR 轉帳 QR code 產生器。輸入銀行帳號即可產生符合台灣跨行轉帳標準的 QR Code，供付款人使用行動銀行 app 掃描轉帳。",
+      "url": "https://twqr.tzing.dev/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TWD"
+      },
+      "featureList": [
+        "產生 TWQR 格式 QR Code",
+        "支援台灣所有銀行代碼",
+        "可自訂轉帳金額",
+        "下載或分享 QR Code 圖片",
+        "離線使用 (PWA)"
+      ],
+      "inLanguage": ["zh-TW", "en"],
+      "isAccessibleForFree": true,
+      "image": "https://twqr.tzing.dev/images/og-image.png"
+    }
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

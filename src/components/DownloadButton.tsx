@@ -10,6 +10,11 @@ export const DownloadButton = ({ imageUrl, fileName = 'qrcode.png', className }:
   const { t } = useTranslation()
 
   const handleDownload = () => {
+    // Track download event
+    if (typeof gtag === 'function') {
+      gtag('event', 'download_qrcode');
+    }
+
     const link = document.createElement('a')
     link.href = imageUrl
     link.download = fileName

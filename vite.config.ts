@@ -1,11 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import Sitemap from 'vite-plugin-sitemap'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    Sitemap({
+      hostname: 'https://twqr.tzing.dev',
+      generateRobotsTxt: true,
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       minify: false,

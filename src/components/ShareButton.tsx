@@ -21,6 +21,11 @@ export const ShareButton = ({ imageUrl, fileName = 'qrcode.png', className }: Sh
   }, [])
 
   const handleShare = async () => {
+    // Track share event
+    if (typeof gtag === 'function') {
+      gtag('event', 'share', { content_type: 'qrcode' });
+    }
+
     try {
       // Convert Data URL to Blob
       const blob = await (await fetch(imageUrl)).blob()
