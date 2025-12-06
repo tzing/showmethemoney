@@ -16,3 +16,5 @@ Current rules/notes:
 - SEO requirement: keep the site SEO-friendly (titles/meta/structure).
 - Code/comment language: always use English unless the developer explicitly instructs otherwise.
 - Visual direction: use a warm yellow/orange theme across the site.
+- No-JS experience: add static content for visitors/search engines with JS disabled and reuse the same stylesheet for the fallback.
+- No-JS locale: treat visitors without JavaScript as zh-TW users by default.
