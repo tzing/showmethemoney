@@ -119,6 +119,13 @@
   font-weight: 500;
 }
 
+.alt-match {
+  margin-left: 6px;
+  color: color-mix(in srgb, var(--color-text-secondary, #555) 70%, transparent);
+  opacity: 0.9;
+  font-weight: 400;
+}
+
 .match-highlight {
   color: #ef4444;
   font-weight: 700;

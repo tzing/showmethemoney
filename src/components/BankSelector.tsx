@@ -7,6 +7,7 @@ interface Bank {
   no: string;
   name: string;
   "en-name"?: string;
+  aliases?: string[];
 }
 
 interface BankSelectorProps {
@@ -78,36 +79,39 @@ export default function BankSelector({ value, onChange, placeholder, id, name, c
     };
   }, [selectedBank]);
 
-  const filteredBanks = useMemo(() => {
-    if (!searchTerm) return banksData;
+  const filteredBanks = useMemo<{ bank: Bank; altMatchText?: string }[]>(() => {
+    if (!searchTerm) {
+      return banksData.map(bank => ({ bank, altMatchText: undefined as string | undefined }));
+    }
 
     // If the search term exactly matches the currently selected bank display, show all (or hidden?)
     // Usually if I click the input, I want to see options.
     // If I start typing, filter.
     // If searchTerm matches the format "(code) name", we might want to parse it or just search.
 
-    // Normalizing search term: convert '台' to '臺' for broader matching if user types '台'
-    // Actually, we want bidirectional: '台' matches '臺', '臺' matches '台'.
-    // Easiest way: normalize both to one standard (e.g. '台') for comparison.
-    const normalize = (str: string) => str.toLowerCase().replace(/臺/g, '台');
+    const lowerTerm = searchTerm.toLowerCase();
+    const filtered = banksData.reduce<{ bank: Bank; altMatchText?: string }[]>((acc, bank) => {
+      const displayName = getBankName(bank);
+      const displayMatches = displayName.toLowerCase().includes(lowerTerm);
+      const nameMatches = bank.name.toLowerCase().includes(lowerTerm);
+      const enMatches = bank['en-name'] ? bank['en-name'].toLowerCase().includes(lowerTerm) : false;
+      const aliasMatch = bank.aliases?.find(alias => alias.toLowerCase().includes(lowerTerm));
+      const codeMatches = bank.no.toLowerCase().includes(lowerTerm);
 
-    const lowerTerm = normalize(searchTerm);
-    const filtered = banksData.filter(bank => {
-      const codeName = `${bank.no} ${bank.name} ${bank['en-name'] || ''}`;
-      // Normalize bank data as well for comparison
-      const normalizedCodeName = normalize(codeName);
-      const normalizedNo = normalize(bank.no);
-      const normalizedName = normalize(bank.name);
-      const normalizedEnName = bank['en-name'] ? normalize(bank['en-name']) : '';
+      if (!(displayMatches || nameMatches || enMatches || aliasMatch || codeMatches)) {
+        return acc;
+      }
 
-      return normalizedCodeName.includes(lowerTerm) ||
-        normalizedNo.includes(lowerTerm) ||
-        normalizedName.includes(lowerTerm) ||
-        normalizedEnName.includes(lowerTerm);
-    });
+      const altMatchText = !displayMatches
+        ? aliasMatch || (enMatches ? bank['en-name'] : undefined) || (nameMatches ? bank.name : undefined)
+        : undefined;
 
-    return filtered.sort((a, b) => a.no.localeCompare(b.no));
-  }, [searchTerm]);
+      acc.push({ bank, altMatchText });
+      return acc;
+    }, []);
+
+    return filtered.sort((a, b) => a.bank.no.localeCompare(b.bank.no));
+  }, [searchTerm, i18n.language]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -152,23 +156,14 @@ export default function BankSelector({ value, onChange, placeholder, id, name, c
   const HighlightMatch = ({ text, match }: { text: string, match: string }) => {
     if (!match) return <>{text}</>;
 
-    // Create a regex that matches both '台' and '臺' if the search term contains either
     const escapedMatch = match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const pattern = escapedMatch
-      .split('')
-      .map(char => {
-        if (char === '台' || char === '臺') return '[台臺]';
-        return char;
-      })
-      .join('');
-
-    const parts = text.split(new RegExp(`(${pattern})`, 'gi'));
+    const parts = text.split(new RegExp(`(${escapedMatch})`, 'gi'));
 
     return (
       <>
         {parts.map((part, i) => {
-          // Check if this part matches the pattern
-          const isMatch = new RegExp(`^${pattern}$`, 'i').test(part);
+          // Check if this part matches the search term
+          const isMatch = new RegExp(`^${escapedMatch}$`, 'i').test(part);
           return isMatch ? (
             <span key={i} className="match-highlight">{part}</span>
           ) : (
@@ -231,7 +226,7 @@ export default function BankSelector({ value, onChange, placeholder, id, name, c
       </div>
       {isOpen && filteredBanks.length > 0 && (
         <ul className="bank-dropdown">
-          {filteredBanks.map(bank => (
+          {filteredBanks.map(({ bank, altMatchText }) => (
             <li
               key={bank.no}
               onClick={() => handleSelectBank(bank)}
@@ -242,6 +237,11 @@ export default function BankSelector({ value, onChange, placeholder, id, name, c
               </span>
               <span className="bank-name">
                 <HighlightMatch text={getBankName(bank)} match={searchTerm} />
+                {altMatchText && (
+                  <span className="alt-match">
+                    {' '}<HighlightMatch text={altMatchText} match={searchTerm} />
+                  </span>
+                )}
               </span>
             </li>
           ))}
