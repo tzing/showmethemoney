@@ -98,7 +98,6 @@ const generateQRCode = async (content: string, options: QRCodeOptions): Promise<
 
     const qrImage = new Image()
     const logoImage = new Image()
-    let logoObjectUrl = ''
 
     await Promise.all([
       // Load generated QR code image
@@ -107,17 +106,36 @@ const generateQRCode = async (content: string, options: QRCodeOptions): Promise<
         qrImage.src = qrDataUrl
       }),
 
-      // Fetch logo as blob to ensure it works offline/cached
+      // Fetch logo from cache or network
       new Promise((resolve) => {
         logoImage.crossOrigin = 'anonymous'
         logoImage.onload = resolve
         logoImage.onerror = resolve
 
+        const CACHE_KEY = 'twqr-logo-cache'
+        const cachedLogo = localStorage.getItem(CACHE_KEY)
+        if (cachedLogo) {
+          logoImage.src = cachedLogo
+          return
+        }
+
         fetch(twqrLogo)
           .then((res) => res.blob())
           .then((blob) => {
-            logoObjectUrl = URL.createObjectURL(blob)
-            logoImage.src = logoObjectUrl
+            const reader = new FileReader()
+            reader.onloadend = () => {
+              const base64data = reader.result as string
+              try {
+                localStorage.setItem(CACHE_KEY, base64data)
+              } catch (e) {
+                console.warn('Failed to cache logo:', e)
+              }
+              logoImage.src = base64data
+            }
+            reader.onerror = () => {
+              logoImage.src = twqrLogo
+            }
+            reader.readAsDataURL(blob)
           })
           .catch(() => {
             logoImage.src = twqrLogo
@@ -215,9 +233,6 @@ const generateQRCode = async (content: string, options: QRCodeOptions): Promise<
     }
 
     const dataUrl = canvas.toDataURL()
-    if (logoObjectUrl) {
-      URL.revokeObjectURL(logoObjectUrl)
-    }
 
     return { dataUrl }
   } catch (err) {
