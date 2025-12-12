@@ -39,11 +39,18 @@
   <meta name="theme-color" content="#feefc6" />
 
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LY8DSR4Q9R"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    if (location.hostname === 'twqr.tzing.dev') { // Only enable GA on production domain
+    const dntEnabled = navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.msDoNotTrack === '1'
+    const isProd = location.hostname === 'twqr.tzing.dev'
+
+    if (!dntEnabled && isProd) {
+      const gaScript = document.createElement('script')
+      gaScript.async = true
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-LY8DSR4Q9R'
+      document.head.appendChild(gaScript)
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-LY8DSR4Q9R');
     }
