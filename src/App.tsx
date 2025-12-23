@@ -7,6 +7,7 @@ import { DownloadButton } from './components/DownloadButton'
 import { ShareButton } from './components/ShareButton'
 import { QrCanvas } from './components/QrCanvas'
 import { generateTWQRPUrl } from './utils/twqrUrl'
+import { removeInvisibleChars } from './utils/stringUtils'
 import './App.css'
 
 function App() {
@@ -104,7 +105,7 @@ function App() {
               name="accountId"
               placeholder={t('accountIdPlaceholder')}
               value={accountId}
-              onChange={(e) => setAccountId(e.target.value)}
+              onChange={(e) => setAccountId(removeInvisibleChars(e.target.value))}
               onClear={() => setAccountId('')}
             />
           </div>
@@ -119,7 +120,7 @@ function App() {
                   name="name"
                   placeholder={t('namePlaceholder')}
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => setName(removeInvisibleChars(e.target.value))}
                   onClear={() => setName('')}
                 />
               </div>
