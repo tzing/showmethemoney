@@ -167,6 +167,15 @@
   box-shadow: 0 0 0 4px rgba(251, 146, 60, 0.15);
 }
 
+.form-group input.invalid {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.form-group input.invalid:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
 .form-group input::placeholder {
   color: #94a3b8;
 }

@@ -23,6 +23,10 @@ function App() {
   const coinRainRef = useRef<CoinRainHandle>(null)
   const cardRef = useRef<HTMLElement>(null)
 
+  const isAccountIdInvalid = useMemo(() => {
+    return accountId !== '' && /[^0-9\-\s]/.test(accountId)
+  }, [accountId])
+
   // Save to localStorage whenever values change
   useEffect(() => {
     localStorage.setItem('bankCode', bankCode)
@@ -107,6 +111,8 @@ function App() {
               value={accountId}
               onChange={(e) => setAccountId(removeInvisibleChars(e.target.value))}
               onClear={() => setAccountId('')}
+              inputMode="numeric"
+              className={isAccountIdInvalid ? 'invalid' : ''}
             />
           </div>
 

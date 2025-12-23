@@ -10,8 +10,9 @@ export const generateTWQRPUrl = ({ bankCode, accountId, amount }: TWQRPUrlOption
   const params = new URLSearchParams()
 
   params.append('D5', bankCode)
-  // account ID needs to be padded to 16 digits
-  params.append('D6', accountId.padStart(16, '0'))
+  // account ID needs to be padded to 16 digits, remove non-digits (like hyphens or spaces)
+  const cleanAccountId = accountId.replace(/\D/g, '')
+  params.append('D6', cleanAccountId.padStart(16, '0'))
 
   if (amount) {
     params.append('D10', '901')
